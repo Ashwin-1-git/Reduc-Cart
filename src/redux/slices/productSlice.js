@@ -15,29 +15,37 @@ const productSlice = createSlice({
     name:'products',
     initialState:{
         allProducts:[],
+        dummyAllProducts:[],
         loading:true,
         error:""
     },
     reducers:{
-        // actions are synchronous
+        // actions are synchronous, action payload search kry from header
+        searchProduct:(state,action)=>{
+            state.allProducts = state.allProducts.filter(item=>item.title.toLowercase().includes(action.payload.toLowercase()))
+
+        }
     },
     extraReducers:(builder)=>{
         builder.addCase(getAllProducts.fulfilled,(state,action)=>{
             state.allProducts = action.payload
+            state.dummyAllProducts = action.payload
             state.loading = false
             state.error = ""
         })
         builder.addCase(getAllProducts.pending,(state,action)=>{
             state.allProducts = []
+            state.dummyAllProducts = []
             state.loading = true
             state.error = ""
         })
         builder.addCase(getAllProducts.rejected,(state,action)=>{
             state.allProducts = []
+            state.dummyAllProducts = []
             state.loading = false
             state.error = "Something went wrong !! API call Failed....."
         })
     }
 })
-
+export const {searchProduct} = productSlice.actions
 export default productSlice.reducer
